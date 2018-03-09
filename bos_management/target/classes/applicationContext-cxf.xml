@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xmlns:jaxrsclient="http://cxf.apache.org/jaxrs-client"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+http://cxf.apache.org/jaxrs-client http://cxf.apache.org/schemas/jaxrs-client.xsd">
+	<!-- 配置CXF REST订单服务 -->
+	<jaxrs:server address="/orderservice" >
+		<jaxrs:serviceBeans>
+			<ref bean="orderService"/>
+		</jaxrs:serviceBeans>
+	</jaxrs:server>
+	<!-- 配置CXF REST 宣传活动服务 -->
+	<jaxrs:server address="/promotionservice" >
+		<jaxrs:serviceBeans>
+			<ref bean="promotionService"/>
+		</jaxrs:serviceBeans>
+	</jaxrs:server>
+</beans>

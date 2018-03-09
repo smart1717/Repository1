@@ -1,0 +1,7 @@
+{                                                      
+	"total":100,	
+	"rows":[ 
+		{"id":101,"subArchiveName":"自动分单","archive.id":1,"mnemonicCode":1,"mothballed":0,"remark":"系统自动将订单派单给快递员"},
+		{"id":102,"subArchiveName":"人工分单","archive.id":1,"mnemonicCode":2,"mothballed":0,"remark":"订单需人工派单给快递员"}
+	]
+}

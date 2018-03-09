@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<!--引入angularjs-->
+		<script type="text/javascript" src="../js/angular.min.js" ></script>
+	</head>
+	<body>
+		<!--<div ng-app="" ng-init="username='Rose';">-->
+		<div ng-app="myApp" ng-controller="myCtrl">
+			<input ng-model="username"/>
+			<div>Hello {{username}}</div>
+		</div>
+		
+		<script>
+			//初始化模块
+			//参数1：模块的名字
+			//参数2：附加模块的名字，没有则空数组
+			var myApp=angular.module("myApp",[]);
+			//初始化模块下的控制器
+			//参数1：控制器的名字
+			//参数2：js函数
+			myApp.controller("myCtrl",["$scope",function ($scope) {
+				//控制层逻辑代码
+				$scope.username="小红";
+			}]);
+		</script>
+	</body>
+</html>

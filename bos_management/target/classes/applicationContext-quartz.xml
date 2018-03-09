@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd">
+	<!-- 1. 配置jobDetail：任务详情对象 -->
+ 	<bean name="userJobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+ 		<!-- 注入具体的job类型（全类名）：业务对象 -->
+		<property name="jobClass" value="cn.itcast.bos.quartz.job.UserJob" />
+		<!-- 任务详情执行时的属性 -->
+		<property name="jobDataAsMap">
+			<map>
+				<!-- 任务执行的超时时间 -->
+				<entry key="timeout" value="5" />
+			</map>
+		</property>
+	</bean>
+	<!-- 2. 配置trigger：触发规则对象 -->
+	<!-- 计划任务规则对象 -->
+	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<!-- 注入任务详情对象 -->
+		<property name="jobDetail" ref="userJobDetail"/>
+		<!-- 计划表达式 -->
+		<!-- 每天凌晨0点执行一次 -->
+		<property name="cronExpression" value="0 0 0 * * ?"/>
+		<!-- 每隔5秒钟执行一次 -->
+		<!-- <property name="cronExpression" value="0/5 * * * * ?"/> -->
+	</bean>
+	<!-- 3.配置Scheduler：大管家、调度对象 -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<!-- 注入覆盖默认的jobFactory -->
+		<property name="jobFactory" ref="jobFactory"/>
+		<property name="triggers">
+			<list>
+				<!-- 注入触发器规则对象 -->
+				<ref bean="cronTrigger"/>
+			</list>
+		</property>
+	</bean>
+	
+</beans>

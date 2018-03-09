@@ -1,0 +1,63 @@
+prompt
+prompt Creating table T_CUSTOMER
+prompt =========================
+prompt
+create table T_CUSTOMER
+(
+  c_id            NUMBER(10) not null,
+  c_address       VARCHAR2(255 CHAR),
+  c_brithday      DATE,
+  c_company       VARCHAR2(255 CHAR),
+  c_department    VARCHAR2(255 CHAR),
+  c_email         VARCHAR2(255 CHAR),
+  c_fixed_area_id VARCHAR2(255 CHAR),
+  c_mobilephone   VARCHAR2(255 CHAR),
+  c_password      VARCHAR2(255 CHAR),
+  c_position      VARCHAR2(255 CHAR),
+  c_sex           NUMBER(10),
+  c_telephone     VARCHAR2(255 CHAR),
+  c_type          NUMBER(10),
+  c_username      VARCHAR2(255 CHAR)
+)
+;
+alter table T_CUSTOMER
+  add primary key (C_ID);
+
+prompt
+prompt Creating sequence HIBERNATE_SEQUENCE
+prompt ====================================
+prompt
+create sequence HIBERNATE_SEQUENCE
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 1020
+increment by 1
+cache 20;
+
+prompt ====================================
+prompt ====================================
+prompt ==============data======================
+
+
+prompt Disabling triggers for CRM017.T_CUSTOMER...
+alter table CRM017.T_CUSTOMER disable all triggers;
+prompt Loading CRM017.T_CUSTOMER...
+insert into CRM017.T_CUSTOMER (c_id, c_address, c_brithday, c_company, c_department, c_email, c_fixed_area_id, c_mobilephone, c_password, c_position, c_sex, c_telephone, c_type, c_username)
+values (1, 'xxx', null, null, null, null, null, null, null, null, null, '18888888888', null, '宝宝');
+insert into CRM017.T_CUSTOMER (c_id, c_address, c_brithday, c_company, c_department, c_email, c_fixed_area_id, c_mobilephone, c_password, c_position, c_sex, c_telephone, c_type, c_username)
+values (2, '北京市北京市东城区建材城西路金燕龙办公楼一层', null, null, null, null, 'DQ001', null, null, null, null, '13333333333', null, '蓉蓉');
+insert into CRM017.T_CUSTOMER (c_id, c_address, c_brithday, c_company, c_department, c_email, c_fixed_area_id, c_mobilephone, c_password, c_position, c_sex, c_telephone, c_type, c_username)
+values (3, '北京市北京市东城区建材城西路金燕龙办公楼一层', null, null, null, null, 'DQ001', null, null, null, null, '17777777777', null, '吉吉');
+insert into CRM017.T_CUSTOMER (c_id, c_address, c_brithday, c_company, c_department, c_email, c_fixed_area_id, c_mobilephone, c_password, c_position, c_sex, c_telephone, c_type, c_username)
+values (1000, null, null, null, null, 'aa@aa.com', null, null, '123456', null, null, '18516566511', null, null);
+insert into CRM017.T_CUSTOMER (c_id, c_address, c_brithday, c_company, c_department, c_email, c_fixed_area_id, c_mobilephone, c_password, c_position, c_sex, c_telephone, c_type, c_username)
+values (1001, null, null, null, null, 'zhangbo1@itcast.cn', null, null, '123456', null, null, '18516566512', null, null);
+insert into CRM017.T_CUSTOMER (c_id, c_address, c_brithday, c_company, c_department, c_email, c_fixed_area_id, c_mobilephone, c_password, c_position, c_sex, c_telephone, c_type, c_username)
+values (1002, null, null, null, null, 'runjumpfly@163.com', null, null, '123456', null, null, '18516566513', null, null);
+insert into CRM017.T_CUSTOMER (c_id, c_address, c_brithday, c_company, c_department, c_email, c_fixed_area_id, c_mobilephone, c_password, c_position, c_sex, c_telephone, c_type, c_username)
+values (1003, null, null, null, null, 'runjumpfly@163.com', null, null, '123456', null, null, '18516566514', 1, null);
+commit;
+prompt 7 records loaded
+prompt Enabling triggers for CRM017.T_CUSTOMER...
+alter table CRM017.T_CUSTOMER enable all triggers;
+

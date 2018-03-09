@@ -1,0 +1,7 @@
+{
+	"totalCount":100,
+	"products":[
+		{"id":1005,"name":"豆浆机","price":268},
+		{"id":1006,"name":"馒头机","price":398}
+	]
+}

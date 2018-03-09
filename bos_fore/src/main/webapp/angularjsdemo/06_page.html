@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<!--引入angularjs-->
+		<script type="text/javascript" src="../js/angular.min.js" ></script>
+		<!--引入jquery-->
+		<script type="text/javascript" src="../js/jquery.js" ></script>
+		<!--引入BootStrap-->
+		<script type="text/javascript" src="../js/bootstrap.js" ></script>
+		<link rel="stylesheet" href="../css/bootstrap/bootstrap.css" />
+	</head>
+	<body ng-app="paginationApp" ng-controller="pagiationCtrl">
+		<table class="table table-bordered">
+			<tr>
+				<th>序号</th>
+				<th>商品编号</th>
+				<th>商品名字</th>
+				<th>商品价格</th>
+			</tr>
+			<tr ng-repeat="product in products">
+				<td>{{$index+1}}</td>
+				<td>{{product.id}}</td>
+				<td>{{product.name}}</td>
+				<td>{{product.price}}</td>
+			</tr>
+		</table>
+		<!--分页工具条-->
+		<div>
+			<ul class="pagination pull-right">
+				<li>
+					<a href ng-click="prev()">上一页</a>
+				</li>
+				<!--
+					样式:布尔值，如果是true，则显示样式，false不显示
+					这里判断是否是当前页
+				-->
+				<li ng-repeat="page in pageList" ng-class="{active:isActivePage(page)}">
+					<a href ng-click="selectPage(page)">{{page}}</a>
+				</li>
+				<li>
+					<a href ng-click="next()">下一页</a>
+				</li>
+			</ul>
+		</div>
+	</body>
+	
+	<script type="text/javascript">
+		//初始化模版和控制器
+		angular.module("paginationApp",[])
+		.controller("pagiationCtrl",["$scope","$http",function ($scope,$http) {
+			
+			//定义一个vm变量
+			/*$scope.products=[
+				{"id":1001,"name":"电视机","price":998},
+				{"id":1002,"name":"战斗机","price":988898}
+			];*/
+			
+			//定义全局的分页工具条的变量
+			$scope.currentPage=1;//当前页码,默认第一页
+			$scope.pageSize=4;//每页最大记录数
+			//响应相关-服务器返回给客户端的
+			$scope.totalCount=0;//总记录数
+			$scope.totalPages=0;//总页码数，根据总记录数和每页记录数计算
+			//分页页码的列表数组
+			$scope.pageList=new Array();
+
+			//定义分页工具条的方法
+			//上一页
+			$scope.prev=function(){
+				$scope.selectPage($scope.currentPage-1);
+			}
+			//下一页
+			$scope.next=function(){
+				$scope.selectPage($scope.currentPage+1);
+			}
+			//选中的页
+			$scope.selectPage=function(page){
+				//判断
+				if($scope.totalPages!=0&&(page<1 ||page>$scope.totalPages)){
+					//如果总页码不是0，说明不是第一次，并且页码不能小于1且不能大于总页码数，否则直接退出
+					return;
+				}
+				
+				//分页计算和处理。。。。
+				//当前页码变成传进来的页码
+				$scope.currentPage=page;
+				
+				//异步请求表格的数据
+				$http({
+				    method: 'GET',
+				    url: '06_'+page+'.json',//模拟动态数据
+				    param:{//参数
+				    	page:$scope.currentPage,//当前页码
+				    	pageSize:$scope.pageSize//每页最大记录数
+				    }
+				    //data就是响应的数据
+				}).then(function successCallback(response) {
+				        // 请求成功执行代码
+				        $scope.products=response.data.products;
+				        console.log(response);
+				        
+				        //====计算页码
+				        //总记录数
+				        $scope.totalCount=response.data.totalCount;
+				        //计算总页数
+				        $scope.totalPages=Math.ceil($scope.totalCount/$scope.pageSize);
+				        
+				        //理论上起始页码
+				        var begin=$scope.currentPage-5;
+				        //修复页码
+				        if(begin<1){
+				        	begin=1;
+				        }
+				        //理论上结束页码
+				        var end=begin+9;
+				        //修复页码
+				        if(end>$scope.totalPages){
+				        	end=$scope.totalPages;
+				        }
+				        //最后修复第一页：倒推第一页页码
+				        begin=end-9;
+				         //修复页码
+				        if(begin<1){
+				        	begin=1;
+				        }
+				        
+				        //遍历填充创建页码的列表的数组对象
+				        for(var i=begin;i<=end;i++){
+				        	$scope.pageList.push(i);
+				        }
+				        
+				    }, function errorCallback(response) {
+				        // 请求失败执行代码
+				        alert("请求表格数据失败！")
+				});
+				
+			}
+			
+			//是否是当前页
+			$scope.isActivePage=function(page){
+				//值相等
+				return $scope.currentPage===page;
+			}
+			
+			//在页面加载后，要进行第一次的查询，默认查询第一页
+			$scope.selectPage(1);
+			
+			
+		}]);
+	</script>
+</html>

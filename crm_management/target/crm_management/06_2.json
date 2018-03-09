@@ -1,0 +1,9 @@
+{
+	"totalCount":100,
+	"products":[
+		{"id":1005,"name":"123123123","price":998},
+		{"id":1006,"name":"asfsdfsd","price":988898},
+		{"id":1007,"name":"sdfsdfsdf","price":98},
+		{"id":1008,"name":"sdfsdfsdf","price":198}
+	]
+}

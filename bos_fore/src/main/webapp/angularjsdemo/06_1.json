@@ -1,0 +1,10 @@
+{
+	"totalCount":100,
+	"products":[
+		{"id":1001,"name":"电视机","price":998},
+		{"id":1002,"name":"战斗机","price":988898},
+		{"id":1003,"name":"洗衣机","price":98},
+		{"id":1004,"name":"挂烫机","price":198}
+
+	]
+}

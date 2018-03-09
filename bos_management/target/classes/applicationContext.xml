@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/data/jpa 
+		http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+
+	<!-- 扫描 @Server @Controller @Repository -->
+	<context:component-scan base-package="cn.itcast"/>
+
+	<!-- 加载properties文件 -->
+	<context:property-placeholder location="classpath:config.properties" />
+	
+	<!-- 数据库连接池 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${jdbc.driver}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.user}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+	
+	<!-- spring整合jpa（EntitymanagerFactory） -->
+	<!-- 实体管理工厂 -->
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<!-- 1.数据源 -->
+		<property name="dataSource" ref="dataSource" />
+		<!-- 2.扫描实体类 -->
+		<property name="packagesToScan" value="cn.itcast.bos.domain" />
+		<!-- 3.一些jpa属性配置 -->
+		<!-- jpa的持久化提供者，如果不配置也可以，默认是hibernate提供者，一般可以不配置 -->
+		<property name="persistenceProvider">
+			<!-- hibernate4.2之前 -->
+			<!-- <bean class="org.hibernate.ejb.HibernatePersistence"></bean> -->
+			<!-- hibernate4.3之后 -->
+			<bean class="org.hibernate.jpa.HibernatePersistenceProvider" />
+		</property>
+		<!-- JPA供应商适配：数据库和方言 -->
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<!-- 数据库类型配置 -->
+				<property name="database" value="ORACLE" />
+				<!-- 是否自动生成DDL建表 ：如果先有表，则关闭自动建表-->
+				<property name="generateDdl" value="true" />
+				<!-- 配置dialect方言 -->
+				<property name="databasePlatform" value="org.hibernate.dialect.Oracle10gDialect"/>
+				<!-- 打印sql -->
+				<property name="showSql" value="true"/>
+			</bean>
+		</property>
+		<!-- 可省略：jpa的方言 -->
+		<property name="jpaDialect">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+		</property>
+		<!-- jpa的实现（Hibernate）的更多属性 -->
+		<property name="jpaPropertyMap">
+			<map>
+				<entry key="hibernate.query.substitutions" value="true 1, false 0" />
+				<entry key="hibernate.default_batch_fetch_size" value="16" />
+				<entry key="hibernate.max_fetch_depth" value="2" />
+				<!-- 开发环境下打开统计信息 ，生产环境下一定要关闭，因为耗费性能-->
+				<entry key="hibernate.generate_statistics" value="false" />
+				<entry key="hibernate.bytecode.use_reflection_optimizer" value="true" />
+				<entry key="hibernate.cache.use_second_level_cache" value="false" />
+				<entry key="hibernate.cache.use_query_cache" value="false" />
+				<!-- 格式化sql -->
+				<entry key="hibernate.format_sql" value="true" />
+			</map>
+		</property>
+	</bean>
+	
+<!-- spring的平台事务管理器：基于jpa-->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<!-- 注入实体管理工厂 -->
+		<property name="entityManagerFactory" ref="entityManagerFactory"/>
+	</bean>
+	
+	<!-- spring事务注解驱动 -->
+	<tx:annotation-driven transaction-manager="transactionManager" 
+	proxy-target-class="true"/>
+	
+	<!-- Spring Data jpa的持久层的接口的扫描(包括子包)
+	自动为其实现一个对象
+	 -->
+	<jpa:repositories base-package="cn.itcast.bos.dao"/>
+	<!-- 引入 cxf配置文件  -->
+	<import resource="applicationContext-cxf.xml"/>
+	<!-- 引入Elasticsearch配置文件  -->
+	<import resource="applicationContext-es.xml"/>
+	<!-- 引入Shiro配置文件  -->
+	<import resource="applicationContext-shiro.xml"/>
+	<!-- 引入ehcache配置文件  -->
+	<import resource="applicationContext-cache.xml"/>
+	<!-- 引入quartz配置文件  -->
+	<import resource="applicationContext-quartz.xml"/>
+	
+</beans>

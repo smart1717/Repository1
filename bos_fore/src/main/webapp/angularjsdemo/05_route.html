@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<!--引入angularjs-->
+		<script type="text/javascript" src="../js/angular.min.js" ></script>
+		<!--引入路由模块-->
+		<script type="text/javascript" src="../js/angular-route.min.js" ></script>
+	</head>
+	<body>
+		<div ng-app="myApp">
+			<div>我是头</div>
+			<div>
+				<a href="#/">首页</a>
+				<a href="#/computer">电脑分类</a>
+				<a href="#/money">财务管理</a>
+			</div>
+			<hr/>
+			<div ng-view></div>
+			<hr/>
+			<div>我是尾</div>
+		</div>
+		
+		<script>
+			angular.module("myApp",["ngRoute"])
+			//路由配置
+			.config(["$routeProvider",function ($routeProvider) {
+				$routeProvider
+                .when('/',{template:'这是首页页面html'})
+                //.when('/computer',{template:'这是电脑分类页面'})
+                .when('/computer',{templateUrl:'05_computer.html'})
+                .when('/money',{template:'这是财务管理页面'})
+                .otherwise({redirectTo:'/'});
+			}]);
+		
+		</script>
+	</body>
+</html>

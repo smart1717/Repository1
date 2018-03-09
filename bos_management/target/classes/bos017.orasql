@@ -1,0 +1,1073 @@
+prompt
+prompt Creating table T_ARCHIVE
+prompt ========================
+prompt
+create table T_ARCHIVE
+(
+  c_id                NUMBER(10) not null,
+  c_archive_name      VARCHAR2(255 CHAR),
+  c_archive_num       VARCHAR2(255 CHAR),
+  c_haschild          NUMBER(10),
+  c_operating_company VARCHAR2(255 CHAR),
+  c_operating_time    TIMESTAMP(6),
+  c_operator          VARCHAR2(255 CHAR),
+  c_remark            VARCHAR2(255 CHAR)
+)
+;
+alter table T_ARCHIVE
+  add primary key (C_ID);
+alter table T_ARCHIVE
+  add constraint UK_FWO5QPCS200DHKA2EHN43MR5I unique (C_ARCHIVE_NUM);
+
+prompt
+prompt Creating table T_AREA
+prompt =====================
+prompt
+create table T_AREA
+(
+  c_id        VARCHAR2(255 CHAR) not null,
+  c_city      VARCHAR2(255 CHAR),
+  c_citycode  VARCHAR2(255 CHAR),
+  c_district  VARCHAR2(255 CHAR),
+  c_postcode  VARCHAR2(255 CHAR),
+  c_province  VARCHAR2(255 CHAR),
+  c_shortcode VARCHAR2(255 CHAR)
+)
+;
+alter table T_AREA
+  add primary key (C_ID);
+
+prompt
+prompt Creating table T_STANDARD
+prompt =========================
+prompt
+create table T_STANDARD
+(
+  c_id                NUMBER(10) not null,
+  c_max_length        NUMBER(10),
+  c_max_weight        NUMBER(10),
+  c_min_length        NUMBER(10),
+  c_min_weight        NUMBER(10),
+  c_name              VARCHAR2(255 CHAR),
+  c_operating_company VARCHAR2(255 CHAR),
+  c_operating_time    TIMESTAMP(6),
+  c_operator          VARCHAR2(255 CHAR)
+)
+;
+alter table T_STANDARD
+  add primary key (C_ID);
+
+prompt
+prompt Creating table T_TAKE_TIME
+prompt ==========================
+prompt
+create table T_TAKE_TIME
+(
+  c_id                NUMBER(10) not null,
+  c_company           VARCHAR2(255 CHAR),
+  c_name              VARCHAR2(255 CHAR),
+  c_normal_duty_time  VARCHAR2(255 CHAR),
+  c_normal_work_time  VARCHAR2(255 CHAR),
+  c_operating_company VARCHAR2(255 CHAR),
+  c_operating_time    TIMESTAMP(6),
+  c_operator          VARCHAR2(255 CHAR),
+  c_sat_duty_time     VARCHAR2(255 CHAR),
+  c_sat_work_time     VARCHAR2(255 CHAR),
+  c_status            VARCHAR2(255 CHAR),
+  c_sun_duty_time     VARCHAR2(255 CHAR),
+  c_sun_work_time     VARCHAR2(255 CHAR)
+)
+;
+alter table T_TAKE_TIME
+  add primary key (C_ID);
+
+prompt
+prompt Creating table T_COURIER
+prompt ========================
+prompt
+create table T_COURIER
+(
+  c_id           NUMBER(10) not null,
+  c_check_pwd    VARCHAR2(255 CHAR),
+  c_company      VARCHAR2(255 CHAR),
+  c_courier_num  VARCHAR2(255 CHAR),
+  c_deltag       CHAR(1 CHAR),
+  c_name         VARCHAR2(255 CHAR),
+  c_pda          VARCHAR2(255 CHAR),
+  c_telephone    VARCHAR2(255 CHAR),
+  c_type         VARCHAR2(255 CHAR),
+  c_vehicle_num  VARCHAR2(255 CHAR),
+  c_vehicle_type VARCHAR2(255 CHAR),
+  c_standard_id  NUMBER(10),
+  c_taketime_id  NUMBER(10)
+)
+;
+alter table T_COURIER
+  add primary key (C_ID);
+alter table T_COURIER
+  add constraint UK_2STQY6YBJRA1BASVO3FTEJSXA unique (C_COURIER_NUM);
+alter table T_COURIER
+  add constraint FKD4E2P0HLRIYCHXAPEI07GO5KQ foreign key (C_TAKETIME_ID)
+  references T_TAKE_TIME (C_ID);
+alter table T_COURIER
+  add constraint FKIY0RVS2X4XEHC75SWPHUOFJYK foreign key (C_STANDARD_ID)
+  references T_STANDARD (C_ID);
+
+prompt
+prompt Creating table T_FIXED_AREA
+prompt ===========================
+prompt
+create table T_FIXED_AREA
+(
+  c_id                VARCHAR2(255 CHAR) not null,
+  c_company           VARCHAR2(255 CHAR),
+  c_fixed_area_leader VARCHAR2(255 CHAR),
+  c_fixed_area_name   VARCHAR2(255 CHAR),
+  c_operating_company VARCHAR2(255 CHAR),
+  c_operating_time    TIMESTAMP(6),
+  c_operator          VARCHAR2(255 CHAR),
+  c_telephone         VARCHAR2(255 CHAR)
+)
+;
+alter table T_FIXED_AREA
+  add primary key (C_ID);
+alter table T_FIXED_AREA
+  add constraint UK_IU19JVWQ91YMOGDX7TN5198BQ unique (C_FIXED_AREA_LEADER);
+alter table T_FIXED_AREA
+  add constraint UK_LOSHLG2OCQ6WMDSR9JRCOY53W unique (C_FIXED_AREA_NAME);
+
+prompt
+prompt Creating table T_FIXEDAREA_COURIER
+prompt ==================================
+prompt
+create table T_FIXEDAREA_COURIER
+(
+  c_fixed_area_id VARCHAR2(255 CHAR) not null,
+  c_courier_id    NUMBER(10) not null
+)
+;
+alter table T_FIXEDAREA_COURIER
+  add primary key (C_FIXED_AREA_ID, C_COURIER_ID);
+alter table T_FIXEDAREA_COURIER
+  add constraint FKFXJVLWOXV2O8WROET7M2J0AT7 foreign key (C_FIXED_AREA_ID)
+  references T_FIXED_AREA (C_ID);
+alter table T_FIXEDAREA_COURIER
+  add constraint FKGF7F6F196NFTJG1P26IRFY8LW foreign key (C_COURIER_ID)
+  references T_COURIER (C_ID);
+
+prompt
+prompt Creating table T_MENU
+prompt =====================
+prompt
+create table T_MENU
+(
+  c_id          NUMBER(10) not null,
+  c_description VARCHAR2(255 CHAR),
+  c_name        VARCHAR2(255 CHAR),
+  c_page        VARCHAR2(255 CHAR),
+  c_priority    NUMBER(10),
+  c_pid         NUMBER(10)
+)
+;
+alter table T_MENU
+  add primary key (C_ID);
+alter table T_MENU
+  add constraint FKS2GGRQEMELGIRB6WWETBJQMCT foreign key (C_PID)
+  references T_MENU (C_ID);
+
+prompt
+prompt Creating table T_ORDER
+prompt ======================
+prompt
+create table T_ORDER
+(
+  c_id              NUMBER(10) not null,
+  c_customer_id     NUMBER(10),
+  c_goods_type      VARCHAR2(255 CHAR),
+  c_order_num       VARCHAR2(255 CHAR),
+  c_order_time      TIMESTAMP(6),
+  c_order_type      VARCHAR2(255 CHAR),
+  c_pay_type_num    VARCHAR2(255 CHAR),
+  c_rec_address     VARCHAR2(255 CHAR),
+  c_rec_company     VARCHAR2(255 CHAR),
+  c_rec_mobile      VARCHAR2(255 CHAR),
+  c_rec_name        VARCHAR2(255 CHAR),
+  c_remark          VARCHAR2(255 CHAR),
+  c_send_address    VARCHAR2(255 CHAR),
+  c_send_company    VARCHAR2(255 CHAR),
+  c_send_mobile     VARCHAR2(255 CHAR),
+  c_send_mobile_msg VARCHAR2(255 CHAR),
+  c_send_name       VARCHAR2(255 CHAR),
+  c_send_pro_num    VARCHAR2(255 CHAR),
+  c_status          VARCHAR2(255 CHAR),
+  c_telephone       VARCHAR2(255 CHAR),
+  c_weight          FLOAT,
+  c_courier_id      NUMBER(10),
+  c_rec_area_id     VARCHAR2(255 CHAR),
+  c_send_area_id    VARCHAR2(255 CHAR)
+)
+;
+alter table T_ORDER
+  add primary key (C_ID);
+alter table T_ORDER
+  add constraint FK46SYBXL43L6V79XIWC0NRSEFB foreign key (C_SEND_AREA_ID)
+  references T_AREA (C_ID);
+alter table T_ORDER
+  add constraint FK9XARM51LATW23N5G8YF8OUVG6 foreign key (C_REC_AREA_ID)
+  references T_AREA (C_ID);
+alter table T_ORDER
+  add constraint FKEWSODCYNDO47V40M08XRWHGK6 foreign key (C_COURIER_ID)
+  references T_COURIER (C_ID);
+
+prompt
+prompt Creating table T_PERMISSION
+prompt ===========================
+prompt
+create table T_PERMISSION
+(
+  c_id          NUMBER(10) not null,
+  c_description VARCHAR2(255 CHAR),
+  c_keyword     VARCHAR2(255 CHAR),
+  c_name        VARCHAR2(255 CHAR)
+)
+;
+alter table T_PERMISSION
+  add primary key (C_ID);
+
+prompt
+prompt Creating table T_PROMOTION
+prompt ==========================
+prompt
+create table T_PROMOTION
+(
+  c_id           NUMBER(10) not null,
+  c_active_scope VARCHAR2(255 CHAR),
+  c_description  VARCHAR2(255 CHAR),
+  c_end_date     TIMESTAMP(6),
+  c_start_date   TIMESTAMP(6),
+  c_status       VARCHAR2(255 CHAR),
+  c_title        VARCHAR2(255 CHAR),
+  c_title_img    VARCHAR2(255 CHAR),
+  c_update_time  TIMESTAMP(6),
+  c_update_unit  VARCHAR2(255 CHAR),
+  c_update_user  VARCHAR2(255 CHAR)
+)
+;
+alter table T_PROMOTION
+  add primary key (C_ID);
+
+prompt
+prompt Creating table T_ROLE
+prompt =====================
+prompt
+create table T_ROLE
+(
+  c_id          NUMBER(10) not null,
+  c_description VARCHAR2(255 CHAR),
+  c_keyword     VARCHAR2(255 CHAR),
+  c_name        VARCHAR2(255 CHAR)
+)
+;
+alter table T_ROLE
+  add primary key (C_ID);
+
+prompt
+prompt Creating table T_ROLE_MENU
+prompt ==========================
+prompt
+create table T_ROLE_MENU
+(
+  c_role_id NUMBER(10) not null,
+  c_menu_id NUMBER(10) not null
+)
+;
+alter table T_ROLE_MENU
+  add primary key (C_ROLE_ID, C_MENU_ID);
+alter table T_ROLE_MENU
+  add constraint FK6W94MFB5V0K7WXCMD6ENTWL7V foreign key (C_ROLE_ID)
+  references T_ROLE (C_ID);
+alter table T_ROLE_MENU
+  add constraint FKONMMFAGV5HX8W5YDXVQO73XHA foreign key (C_MENU_ID)
+  references T_MENU (C_ID);
+
+prompt
+prompt Creating table T_ROLE_PERMISSION
+prompt ================================
+prompt
+create table T_ROLE_PERMISSION
+(
+  c_role_id       NUMBER(10) not null,
+  c_permission_id NUMBER(10) not null
+)
+;
+alter table T_ROLE_PERMISSION
+  add primary key (C_ROLE_ID, C_PERMISSION_ID);
+alter table T_ROLE_PERMISSION
+  add constraint FKRBTWEDL099SMOUXUPMK5JB4NP foreign key (C_ROLE_ID)
+  references T_ROLE (C_ID);
+alter table T_ROLE_PERMISSION
+  add constraint FKSOGNHTHYJUBE5XNBW15157OSF foreign key (C_PERMISSION_ID)
+  references T_PERMISSION (C_ID);
+
+prompt
+prompt Creating table T_SCORE
+prompt ======================
+prompt
+create table T_SCORE
+(
+  id          NUMBER not null,
+  studentname VARCHAR2(50),
+  coursename  VARCHAR2(50),
+  coursescore NUMBER
+)
+;
+alter table T_SCORE
+  add constraint PK_SCORE_ID primary key (ID);
+
+prompt
+prompt Creating table T_SUB_ARCHIVE
+prompt ============================
+prompt
+create table T_SUB_ARCHIVE
+(
+  c_id                NUMBER(10) not null,
+  c_mnemonic_code     VARCHAR2(255 CHAR),
+  c_mothballed        CHAR(1 CHAR),
+  c_operating_company VARCHAR2(255 CHAR),
+  c_operating_time    TIMESTAMP(6),
+  c_operator          VARCHAR2(255 CHAR),
+  c_remark            VARCHAR2(255 CHAR),
+  c_sub_archive_name  VARCHAR2(255 CHAR),
+  c_archive_id        NUMBER(10)
+)
+;
+alter table T_SUB_ARCHIVE
+  add primary key (C_ID);
+alter table T_SUB_ARCHIVE
+  add constraint FKJYPTLTN7R5BHQSHI3RLC6QPYA foreign key (C_ARCHIVE_ID)
+  references T_ARCHIVE (C_ID);
+
+prompt
+prompt Creating table T_SUB_AREA
+prompt =========================
+prompt
+create table T_SUB_AREA
+(
+  c_id               VARCHAR2(255 CHAR) not null,
+  c_assist_key_words VARCHAR2(255 CHAR),
+  c_endnum           VARCHAR2(255 CHAR),
+  c_key_words        VARCHAR2(255 CHAR),
+  c_single           CHAR(1 CHAR),
+  c_start_num        VARCHAR2(255 CHAR),
+  c_area_id          VARCHAR2(255 CHAR),
+  c_fixedarea_id     VARCHAR2(255 CHAR)
+)
+;
+alter table T_SUB_AREA
+  add primary key (C_ID);
+alter table T_SUB_AREA
+  add constraint FK96XB3D59SC1O1QUW68DS9ADIP foreign key (C_FIXEDAREA_ID)
+  references T_FIXED_AREA (C_ID);
+alter table T_SUB_AREA
+  add constraint FKRCQBGM4699P3578L0XSW9IPJO foreign key (C_AREA_ID)
+  references T_AREA (C_ID);
+
+prompt
+prompt Creating table T_USER
+prompt =====================
+prompt
+create table T_USER
+(
+  c_id        NUMBER(10) not null,
+  c_birthday  TIMESTAMP(6),
+  c_gender    VARCHAR2(255 CHAR),
+  c_nickname  VARCHAR2(255 CHAR),
+  c_password  VARCHAR2(255 CHAR),
+  c_remark    VARCHAR2(255 CHAR),
+  c_station   VARCHAR2(255 CHAR),
+  c_telephone VARCHAR2(255 CHAR),
+  c_username  VARCHAR2(255 CHAR),
+  status      CHAR(1),
+  activetime  DATE
+)
+;
+comment on column T_USER.status
+  is '状态:1，正常 0 未激活、过期';
+comment on column T_USER.activetime
+  is '激活日期';
+alter table T_USER
+  add primary key (C_ID);
+alter table T_USER
+  add constraint UK_IJNM8HYPLAVLJMEB0CU7NKF9B unique (C_USERNAME);
+
+prompt
+prompt Creating table T_USER_ROLE
+prompt ==========================
+prompt
+create table T_USER_ROLE
+(
+  c_user_id NUMBER(10) not null,
+  c_role_id NUMBER(10) not null
+)
+;
+alter table T_USER_ROLE
+  add primary key (C_USER_ID, C_ROLE_ID);
+alter table T_USER_ROLE
+  add constraint FK78E5QD0RIAEAT0WQUHUWCC3CQ foreign key (C_ROLE_ID)
+  references T_ROLE (C_ID);
+alter table T_USER_ROLE
+  add constraint FK9948HCIPPKRDY7LLAF96FYQ81 foreign key (C_USER_ID)
+  references T_USER (C_ID);
+
+prompt
+prompt Creating table T_VEHICLE
+prompt ========================
+prompt
+create table T_VEHICLE
+(
+  c_id           NUMBER(10) not null,
+  c_driver       VARCHAR2(255 CHAR),
+  c_remark       VARCHAR2(255 CHAR),
+  c_route_name   VARCHAR2(255 CHAR),
+  c_route_type   VARCHAR2(255 CHAR),
+  c_snipper      VARCHAR2(255 CHAR),
+  c_telephone    VARCHAR2(255 CHAR),
+  c_ton          NUMBER(10),
+  c_vehicle_num  VARCHAR2(255 CHAR),
+  c_vehicle_type VARCHAR2(255 CHAR)
+)
+;
+alter table T_VEHICLE
+  add primary key (C_ID);
+
+prompt
+prompt Creating table T_WAY_BILL
+prompt =========================
+prompt
+create table T_WAY_BILL
+(
+  c_id            NUMBER(10) not null,
+  c_actlweit      FLOAT,
+  c_arrive_city   VARCHAR2(255 CHAR),
+  c_deltag        VARCHAR2(255 CHAR),
+  c_feeitemnum    NUMBER(10),
+  c_floadreqr     VARCHAR2(255 CHAR),
+  c_goods_type    VARCHAR2(255 CHAR),
+  c_num           NUMBER(10),
+  c_pay_type_num  VARCHAR2(255 CHAR),
+  c_rec_address   VARCHAR2(255 CHAR),
+  c_rec_company   VARCHAR2(255 CHAR),
+  c_rec_mobile    VARCHAR2(255 CHAR),
+  c_rec_name      VARCHAR2(255 CHAR),
+  c_remark        VARCHAR2(255 CHAR),
+  c_send_address  VARCHAR2(255 CHAR),
+  c_send_company  VARCHAR2(255 CHAR),
+  c_send_mobile   VARCHAR2(255 CHAR),
+  c_send_name     VARCHAR2(255 CHAR),
+  c_send_pro_num  VARCHAR2(255 CHAR),
+  c_sign_status   NUMBER(10),
+  c_vol           VARCHAR2(255 CHAR),
+  c_way_bill_num  VARCHAR2(255 CHAR),
+  c_way_bill_type VARCHAR2(255 CHAR),
+  c_weight        FLOAT,
+  c_order_id      NUMBER(10),
+  c_rec_area_id   VARCHAR2(255 CHAR),
+  c_send_area_id  VARCHAR2(255 CHAR)
+)
+;
+alter table T_WAY_BILL
+  add primary key (C_ID);
+alter table T_WAY_BILL
+  add constraint UK_AKCICITCCVKBK7Y5OXIFUG830 unique (C_WAY_BILL_NUM);
+alter table T_WAY_BILL
+  add constraint FK6UYX90IPU075OFLV9JGLKK3DP foreign key (C_ORDER_ID)
+  references T_ORDER (C_ID);
+alter table T_WAY_BILL
+  add constraint FKG49R3Y9PIRH2J77ADXX7MYPQ6 foreign key (C_REC_AREA_ID)
+  references T_AREA (C_ID);
+alter table T_WAY_BILL
+  add constraint FKMM8N9W5RTI2F6GGRP8S02UY2N foreign key (C_SEND_AREA_ID)
+  references T_AREA (C_ID);
+
+prompt
+prompt Creating table T_WORK_BILL
+prompt ==========================
+prompt
+create table T_WORK_BILL
+(
+  c_id              NUMBER(10) not null,
+  c_attachbilltimes NUMBER(10),
+  c_buildtime       TIMESTAMP(6),
+  c_pickstate       VARCHAR2(255 CHAR),
+  c_remark          VARCHAR2(255 CHAR),
+  c_smsnumber       VARCHAR2(255 CHAR),
+  c_type            VARCHAR2(255 CHAR),
+  c_courier         NUMBER(10),
+  c_order_id        NUMBER(10)
+)
+;
+alter table T_WORK_BILL
+  add primary key (C_ID);
+alter table T_WORK_BILL
+  add constraint FKJFMKWQNBRKSHCGEBBBVMJRJPG foreign key (C_ORDER_ID)
+  references T_ORDER (C_ID);
+alter table T_WORK_BILL
+  add constraint FKKI91JSF412E16E3J7I6WTN1K foreign key (C_COURIER)
+  references T_COURIER (C_ID);
+
+prompt
+prompt Creating sequence HIBERNATE_SEQUENCE
+prompt ====================================
+prompt
+create sequence HIBERNATE_SEQUENCE
+minvalue 1
+maxvalue 9999999999999999999999999999
+start with 1060
+increment by 1
+cache 20;
+
+prompt  ====================================
+prompt  ====================================
+prompt  ============data========================
+
+prompt Disabling triggers for BOS017.T_ARCHIVE...
+alter table BOS017.T_ARCHIVE disable all triggers;
+prompt Disabling triggers for BOS017.T_AREA...
+alter table BOS017.T_AREA disable all triggers;
+prompt Disabling triggers for BOS017.T_STANDARD...
+alter table BOS017.T_STANDARD disable all triggers;
+prompt Disabling triggers for BOS017.T_TAKE_TIME...
+alter table BOS017.T_TAKE_TIME disable all triggers;
+prompt Disabling triggers for BOS017.T_COURIER...
+alter table BOS017.T_COURIER disable all triggers;
+prompt Disabling triggers for BOS017.T_FIXED_AREA...
+alter table BOS017.T_FIXED_AREA disable all triggers;
+prompt Disabling triggers for BOS017.T_FIXEDAREA_COURIER...
+alter table BOS017.T_FIXEDAREA_COURIER disable all triggers;
+prompt Disabling triggers for BOS017.T_MENU...
+alter table BOS017.T_MENU disable all triggers;
+prompt Disabling triggers for BOS017.T_ORDER...
+alter table BOS017.T_ORDER disable all triggers;
+prompt Disabling triggers for BOS017.T_PERMISSION...
+alter table BOS017.T_PERMISSION disable all triggers;
+prompt Disabling triggers for BOS017.T_PROMOTION...
+alter table BOS017.T_PROMOTION disable all triggers;
+prompt Disabling triggers for BOS017.T_ROLE...
+alter table BOS017.T_ROLE disable all triggers;
+prompt Disabling triggers for BOS017.T_ROLE_MENU...
+alter table BOS017.T_ROLE_MENU disable all triggers;
+prompt Disabling triggers for BOS017.T_ROLE_PERMISSION...
+alter table BOS017.T_ROLE_PERMISSION disable all triggers;
+prompt Disabling triggers for BOS017.T_SCORE...
+alter table BOS017.T_SCORE disable all triggers;
+prompt Disabling triggers for BOS017.T_SUB_ARCHIVE...
+alter table BOS017.T_SUB_ARCHIVE disable all triggers;
+prompt Disabling triggers for BOS017.T_SUB_AREA...
+alter table BOS017.T_SUB_AREA disable all triggers;
+prompt Disabling triggers for BOS017.T_USER...
+alter table BOS017.T_USER disable all triggers;
+prompt Disabling triggers for BOS017.T_USER_ROLE...
+alter table BOS017.T_USER_ROLE disable all triggers;
+prompt Disabling triggers for BOS017.T_VEHICLE...
+alter table BOS017.T_VEHICLE disable all triggers;
+prompt Disabling triggers for BOS017.T_WAY_BILL...
+alter table BOS017.T_WAY_BILL disable all triggers;
+prompt Disabling triggers for BOS017.T_WORK_BILL...
+alter table BOS017.T_WORK_BILL disable all triggers;
+prompt Disabling foreign key constraints for BOS017.T_COURIER...
+alter table BOS017.T_COURIER disable constraint FKD4E2P0HLRIYCHXAPEI07GO5KQ;
+alter table BOS017.T_COURIER disable constraint FKIY0RVS2X4XEHC75SWPHUOFJYK;
+prompt Disabling foreign key constraints for BOS017.T_FIXEDAREA_COURIER...
+alter table BOS017.T_FIXEDAREA_COURIER disable constraint FKFXJVLWOXV2O8WROET7M2J0AT7;
+alter table BOS017.T_FIXEDAREA_COURIER disable constraint FKGF7F6F196NFTJG1P26IRFY8LW;
+prompt Disabling foreign key constraints for BOS017.T_MENU...
+alter table BOS017.T_MENU disable constraint FKS2GGRQEMELGIRB6WWETBJQMCT;
+prompt Disabling foreign key constraints for BOS017.T_ORDER...
+alter table BOS017.T_ORDER disable constraint FK46SYBXL43L6V79XIWC0NRSEFB;
+alter table BOS017.T_ORDER disable constraint FK9XARM51LATW23N5G8YF8OUVG6;
+alter table BOS017.T_ORDER disable constraint FKEWSODCYNDO47V40M08XRWHGK6;
+prompt Disabling foreign key constraints for BOS017.T_ROLE_MENU...
+alter table BOS017.T_ROLE_MENU disable constraint FK6W94MFB5V0K7WXCMD6ENTWL7V;
+alter table BOS017.T_ROLE_MENU disable constraint FKONMMFAGV5HX8W5YDXVQO73XHA;
+prompt Disabling foreign key constraints for BOS017.T_ROLE_PERMISSION...
+alter table BOS017.T_ROLE_PERMISSION disable constraint FKRBTWEDL099SMOUXUPMK5JB4NP;
+alter table BOS017.T_ROLE_PERMISSION disable constraint FKSOGNHTHYJUBE5XNBW15157OSF;
+prompt Disabling foreign key constraints for BOS017.T_SUB_ARCHIVE...
+alter table BOS017.T_SUB_ARCHIVE disable constraint FKJYPTLTN7R5BHQSHI3RLC6QPYA;
+prompt Disabling foreign key constraints for BOS017.T_SUB_AREA...
+alter table BOS017.T_SUB_AREA disable constraint FK96XB3D59SC1O1QUW68DS9ADIP;
+alter table BOS017.T_SUB_AREA disable constraint FKRCQBGM4699P3578L0XSW9IPJO;
+prompt Disabling foreign key constraints for BOS017.T_USER_ROLE...
+alter table BOS017.T_USER_ROLE disable constraint FK78E5QD0RIAEAT0WQUHUWCC3CQ;
+alter table BOS017.T_USER_ROLE disable constraint FK9948HCIPPKRDY7LLAF96FYQ81;
+prompt Disabling foreign key constraints for BOS017.T_WAY_BILL...
+alter table BOS017.T_WAY_BILL disable constraint FK6UYX90IPU075OFLV9JGLKK3DP;
+alter table BOS017.T_WAY_BILL disable constraint FKG49R3Y9PIRH2J77ADXX7MYPQ6;
+alter table BOS017.T_WAY_BILL disable constraint FKMM8N9W5RTI2F6GGRP8S02UY2N;
+prompt Disabling foreign key constraints for BOS017.T_WORK_BILL...
+alter table BOS017.T_WORK_BILL disable constraint FKJFMKWQNBRKSHCGEBBBVMJRJPG;
+alter table BOS017.T_WORK_BILL disable constraint FKKI91JSF412E16E3J7I6WTN1K;
+prompt Loading BOS017.T_ARCHIVE...
+prompt Table is empty
+prompt Loading BOS017.T_AREA...
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY001', '北京市', 'beijing', '东城区', '110101', '北京市', 'BJBJDC');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY002', '北京市', 'beijing', '西城区', '110102', '北京市', 'BJBJXC');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY003', '北京市', 'beijing', '朝阳区', '110105', '北京市', 'BJBJCY');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY004', '北京市', 'beijing', '丰台区', '110106', '北京市', 'BJBJFT');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY005', '北京市', 'beijing', '石景山区', '110107', '北京市', 'BJBJSJS');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY006', '北京市', 'beijing', '海淀区', '110108', '北京市', 'BJBJHD');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY007', '北京市', 'beijing', '门头沟区', '110109', '北京市', 'BJBJMTG');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY008', '北京市', 'beijing', '房山区', '110111', '北京市', 'BJBJFS');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY009', '北京市', 'beijing', '通州区', '110112', '北京市', 'BJBJTZ');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY010', '北京市', 'beijing', '顺义区', '110113', '北京市', 'BJBJSY');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY011', '北京市', 'beijing', '昌平区', '110114', '北京市', 'BJBJCP');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY012', '北京市', 'beijing', '大兴区', '110115', '北京市', 'BJBJDX');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY013', '北京市', 'beijing', '怀柔区', '110116', '北京市', 'BJBJHR');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY014', '北京市', 'beijing', '平谷区', '110117', '北京市', 'BJBJPG');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY015', '北京市', 'beijing', '密云县', '110228', '北京市', 'BJBJMY');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY016', '北京市', 'beijing', '延庆县', '110229', '北京市', 'BJBJYQ');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY017', '石家庄市', 'shijiazhuang', '长安区', '130102', '河北省', 'HBSJZCA');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY018', '石家庄市', 'shijiazhuang', '桥东区', '130103', '河北省', 'HBSJZQD');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY019', '石家庄市', 'shijiazhuang', '桥西区', '130104', '河北省', 'HBSJZQX');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY020', '石家庄市', 'shijiazhuang', '新华区', '130105', '河北省', 'HBSJZXH');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY021', '石家庄市', 'shijiazhuang', '井陉矿区', '130107', '河北省', 'HBSJZJXK');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY022', '石家庄市', 'shijiazhuang', '裕华区', '130108', '河北省', 'HBSJZYH');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY023', '石家庄市', 'shijiazhuang', '井陉县', '130121', '河北省', 'HBSJZJX');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY024', '石家庄市', 'shijiazhuang', '正定县', '130123', '河北省', 'HBSJZZD');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY025', '石家庄市', 'shijiazhuang', '栾城县', '130124', '河北省', 'HBSJZLC');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY026', '石家庄市', 'shijiazhuang', '行唐县', '130125', '河北省', 'HBSJZXT');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY027', '石家庄市', 'shijiazhuang', '灵寿县', '130126', '河北省', 'HBSJZLS');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY028', '石家庄市', 'shijiazhuang', '高邑县', '130127', '河北省', 'HBSJZGY');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY029', '石家庄市', 'shijiazhuang', '深泽县', '130128', '河北省', 'HBSJZSZ');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY030', '石家庄市', 'shijiazhuang', '赞皇县', '130129', '河北省', 'HBSJZZH');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY031', '石家庄市', 'shijiazhuang', '无极县', '130130', '河北省', 'HBSJZWJ');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY032', '石家庄市', 'shijiazhuang', '平山县', '130131', '河北省', 'HBSJZPS');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY033', '石家庄市', 'shijiazhuang', '元氏县', '130132', '河北省', 'HBSJZYS');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY034', '石家庄市', 'shijiazhuang', '赵县', '130133', '河北省', 'HBSJZZ');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY035', '石家庄市', 'shijiazhuang', '辛集市', '130181', '河北省', 'HBSJZXJ');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY036', '石家庄市', 'shijiazhuang', '藁城市', '130182', '河北省', 'HBSJZGC');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY037', '石家庄市', 'shijiazhuang', '晋州市', '130183', '河北省', 'HBSJZJZ');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY038', '石家庄市', 'shijiazhuang', '新乐市', '130184', '河北省', 'HBSJZXL');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY039', '石家庄市', 'shijiazhuang', '鹿泉市', '130185', '河北省', 'HBSJZLQ');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY040', '天津市', 'tianjin', '和平区', '120101', '天津市', 'TJTJHP');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY041', '天津市', 'tianjin', '河东区', '120102', '天津市', 'TJTJHD');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY042', '天津市', 'tianjin', '河西区', '120103', '天津市', 'TJTJHX');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY043', '天津市', 'tianjin', '南开区', '120104', '天津市', 'TJTJNK');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY044', '天津市', 'tianjin', '河北区', '120105', '天津市', 'TJTJHB');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY045', '天津市', 'tianjin', '红桥区', '120106', '天津市', 'TJTJHQ');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY046', '天津市', 'tianjin', '滨海新区', '120116', '天津市', 'TJTJBHX');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY047', '天津市', 'tianjin', '东丽区', '120110', '天津市', 'TJTJDL');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY048', '天津市', 'tianjin', '西青区', '120111', '天津市', 'TJTJXQ');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY049', '天津市', 'tianjin', '津南区', '120112', '天津市', 'TJTJJN');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY050', '天津市', 'tianjin', '北辰区', '120113', '天津市', 'TJTJBC');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY051', '天津市', 'tianjin', '武清区', '120114', '天津市', 'TJTJWQ');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY052', '天津市', 'tianjin', '宝坻区', '120115', '天津市', 'TJTJBD');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY053', '天津市', 'tianjin', '宁河县', '120221', '天津市', 'TJTJNH');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY054', '天津市', 'tianjin', '静海县', '120223', '天津市', 'TJTJJH');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY055', '天津市', 'tianjin', '蓟县', '120225', '天津市', 'TJTJJ');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY056', '太原市', 'taiyuan', '小店区', '140105', '山西省', 'SXTYXD');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY057', '太原市', 'taiyuan', '迎泽区', '140106', '山西省', 'SXTYYZ');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY058', '太原市', 'taiyuan', '杏花岭区', '140107', '山西省', 'SXTYXHL');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY059', '太原市', 'taiyuan', '尖草坪区', '140108', '山西省', 'SXTYJCP');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY060', '太原市', 'taiyuan', '万柏林区', '140109', '山西省', 'SXTYWBL');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY061', '太原市', 'taiyuan', '晋源区', '140110', '山西省', 'SXTYJY');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY062', '太原市', 'taiyuan', '清徐县', '140121', '山西省', 'SXTYQX');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY063', '太原市', 'taiyuan', '阳曲县', '140122', '山西省', 'SXTYYQ');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY064', '太原市', 'taiyuan', '娄烦县', '140123', '山西省', 'SXTYLF');
+insert into BOS017.T_AREA (c_id, c_city, c_citycode, c_district, c_postcode, c_province, c_shortcode)
+values ('QY065', '太原市', 'taiyuan', '古交市', '140181', '山西省', 'SXTYGJ');
+commit;
+prompt 65 records loaded
+prompt Loading BOS017.T_STANDARD...
+insert into BOS017.T_STANDARD (c_id, c_max_length, c_max_weight, c_min_length, c_min_weight, c_name, c_operating_company, c_operating_time, c_operator)
+values (1, null, null, null, null, '小件标准-上海', null, null, null);
+insert into BOS017.T_STANDARD (c_id, c_max_length, c_max_weight, c_min_length, c_min_weight, c_name, c_operating_company, c_operating_time, c_operator)
+values (21, 10, 10, 1, 1, '1-10公斤', null, null, null);
+insert into BOS017.T_STANDARD (c_id, c_max_length, c_max_weight, c_min_length, c_min_weight, c_name, c_operating_company, c_operating_time, c_operator)
+values (22, 20, 20, 10, 10, '10-20公斤', null, null, null);
+insert into BOS017.T_STANDARD (c_id, c_max_length, c_max_weight, c_min_length, c_min_weight, c_name, c_operating_company, c_operating_time, c_operator)
+values (141, 1, 1, 1, 1, '1', null, null, null);
+insert into BOS017.T_STANDARD (c_id, c_max_length, c_max_weight, c_min_length, c_min_weight, c_name, c_operating_company, c_operating_time, c_operator)
+values (142, 2, 2, 2, 2, '2', null, null, null);
+commit;
+prompt 5 records loaded
+prompt Loading BOS017.T_TAKE_TIME...
+insert into BOS017.T_TAKE_TIME (c_id, c_company, c_name, c_normal_duty_time, c_normal_work_time, c_operating_company, c_operating_time, c_operator, c_sat_duty_time, c_sat_work_time, c_status, c_sun_duty_time, c_sun_work_time)
+values (1, null, '北京早班', '6', '14', null, null, null, null, null, '1', null, null);
+insert into BOS017.T_TAKE_TIME (c_id, c_company, c_name, c_normal_duty_time, c_normal_work_time, c_operating_company, c_operating_time, c_operator, c_sat_duty_time, c_sat_work_time, c_status, c_sun_duty_time, c_sun_work_time)
+values (2, null, '北京下午班', '14', '22', null, null, null, null, null, '1', null, null);
+commit;
+prompt 2 records loaded
+prompt Loading BOS017.T_COURIER...
+insert into BOS017.T_COURIER (c_id, c_check_pwd, c_company, c_courier_num, c_deltag, c_name, c_pda, c_telephone, c_type, c_vehicle_num, c_vehicle_type, c_standard_id, c_taketime_id)
+values (23, '123456', '上海航头武当快递公司', 'c1001', '0', '张无忌', '123456', '188888888888', '小件取派员', '沪A88888', '宝马x3', 22, 1);
+insert into BOS017.T_COURIER (c_id, c_check_pwd, c_company, c_courier_num, c_deltag, c_name, c_pda, c_telephone, c_type, c_vehicle_num, c_vehicle_type, c_standard_id, c_taketime_id)
+values (24, '123456', '北京顺义峨眉快递', 'c1002', '0', '周芷若', '123456', '13333333333', '小件取派员', '京A88888', '宝马x1', 21, null);
+insert into BOS017.T_COURIER (c_id, c_check_pwd, c_company, c_courier_num, c_deltag, c_name, c_pda, c_telephone, c_type, c_vehicle_num, c_vehicle_type, c_standard_id, c_taketime_id)
+values (41, '123456', '武当总部快递', 'c1003', '1', '张三丰', '123456', '188888888888', '小件取派员', '浙A88888', '宝马x1', 22, null);
+commit;
+prompt 3 records loaded
+prompt Loading BOS017.T_FIXED_AREA...
+insert into BOS017.T_FIXED_AREA (c_id, c_company, c_fixed_area_leader, c_fixed_area_name, c_operating_company, c_operating_time, c_operator, c_telephone)
+values ('DQ001', '上海航头武当快递公司', '李先生', '一号定区', null, null, null, '13333333333');
+insert into BOS017.T_FIXED_AREA (c_id, c_company, c_fixed_area_leader, c_fixed_area_name, c_operating_company, c_operating_time, c_operator, c_telephone)
+values ('DQ002', '北京顺义峨眉快递', '王先生', '二号定区', null, null, null, '17777777777');
+commit;
+prompt 2 records loaded
+prompt Loading BOS017.T_FIXEDAREA_COURIER...
+insert into BOS017.T_FIXEDAREA_COURIER (c_fixed_area_id, c_courier_id)
+values ('DQ001', 23);
+commit;
+prompt 1 records loaded
+prompt Loading BOS017.T_MENU...
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (11, null, '基础档案', null, 1, null);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (111, null, '基础档案设置', 'pages/base/archives.html', 1, 11);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (112, null, '收派标准', 'pages/base/standard.html', 2, 11);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (113, null, '班车管理', 'pages/base/vehicle.html', 3, 11);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (114, null, '快递员设置/替班', 'pages/base/courier.html', 4, 11);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (115, null, '区域设置', 'pages/base/area.html', 5, 11);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (116, null, '管理分区', 'pages/base/sub_area.html', 6, 11);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (117, null, '管理定区/调度排班', 'pages/base/fixed_area.html', 7, 11);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (118, null, '收派时间管理', 'pages/base/take_time.html', 8, 11);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (12, null, '受理', null, 2, null);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (121, null, '业务受理', 'pages/take_delivery/order.html', 1, 12);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (122, null, '运单快速录入', 'pages/take_delivery/waybill_quick.html', 2, 12);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (123, null, '运单录入', 'pages/take_delivery/waybill.html', 3, 12);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (124, null, '运单导入', 'pages/take_delivery/waybill_import.html', 4, 12);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (125, null, '运单管理', 'pages/take_delivery/waybill_manage.html', 5, 12);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (126, null, '异调运单', 'pages/take_delivery/different_waybill.html', 6, 12);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (127, null, '运单打印', 'pages/take_delivery/waybill_print.html', 7, 12);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (13, null, '调度', null, 3, null);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (131, null, '查台转单', 'pages/take_delivery/change_work_order.html', 1, 13);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (132, null, '人工调度', 'pages/take_delivery/dispatcher.html', 2, 13);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (133, null, '取派调度监控', 'pages/take_delivery/dispatcher_monitor.html', 3, 13);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (134, null, '签收录入', 'pages/take_delivery/sign_input.html', 4, 13);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (135, null, '取消签收申请', 'pages/take_delivery/sign_cancel.html', 5, 13);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (136, null, '宣传任务', 'pages/take_delivery/promotion.html', 6, 13);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (14, null, '分拣管理', null, 4, null);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (141, null, '入库', 'pages/transit/in_storage.html', 1, 14);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (142, null, '出库', 'pages/transit/out_storage.html', 2, 14);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (143, null, '盘库', 'pages/transit/make_storage.html', 3, 14);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (144, null, '合包', 'pages/transit/compose_package.html', 4, 14);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (145, null, '到达时间录入', 'pages/transit/arrive_time.html', 5, 14);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (146, null, '出入库查询', 'pages/transit/in_out_search.html', 6, 14);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (147, null, '库存查询', 'pages/transit/remain_search.html', 7, 14);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (148, null, '合包查询', 'pages/transit/package_search.html', 8, 14);
+insert into BOS017.T_MENU (c_id, c_description, c_name, c_page, c_priority, c_pid)
+values (1000, '百度菜单', '百度', 'http://www.baidu.com', 999, null);
+commit;
+prompt 34 records loaded
+prompt Loading BOS017.T_ORDER...
+insert into BOS017.T_ORDER (c_id, c_customer_id, c_goods_type, c_order_num, c_order_time, c_order_type, c_pay_type_num, c_rec_address, c_rec_company, c_rec_mobile, c_rec_name, c_remark, c_send_address, c_send_company, c_send_mobile, c_send_mobile_msg, c_send_name, c_send_pro_num, c_status, c_telephone, c_weight, c_courier_id, c_rec_area_id, c_send_area_id)
+values (62, null, '文件', null, null, null, '寄付日结', '10', '9', '8', '7', '12', '6', '5', '4', null, '3', '速运当日', null, '18516566511', 11, null, 'QY003', 'QY001');
+insert into BOS017.T_ORDER (c_id, c_customer_id, c_goods_type, c_order_num, c_order_time, c_order_type, c_pay_type_num, c_rec_address, c_rec_company, c_rec_mobile, c_rec_name, c_remark, c_send_address, c_send_company, c_send_mobile, c_send_mobile_msg, c_send_name, c_send_pro_num, c_status, c_telephone, c_weight, c_courier_id, c_rec_area_id, c_send_area_id)
+values (63, null, '文件', '23b42e4c-e7ed-444f-bf4b-d2644ccfbe0a', to_timestamp('07-12-2017 17:52:40.398000', 'dd-mm-yyyy hh24:mi:ss.ff'), '人工分单', '寄付日结', '11', '10', '9', '8', '带个包装盒来', '7', '6', '5', '您的订单已经收到。。。', '4', '速运当日', '待取件', '1', 12, null, 'QY010', 'QY003');
+insert into BOS017.T_ORDER (c_id, c_customer_id, c_goods_type, c_order_num, c_order_time, c_order_type, c_pay_type_num, c_rec_address, c_rec_company, c_rec_mobile, c_rec_name, c_remark, c_send_address, c_send_company, c_send_mobile, c_send_mobile_msg, c_send_name, c_send_pro_num, c_status, c_telephone, c_weight, c_courier_id, c_rec_area_id, c_send_area_id)
+values (65, 1, '文件', 'e2282e6d-2fa1-4dec-aa38-06967b282834', to_timestamp('07-12-2017 18:38:55.619000', 'dd-mm-yyyy hh24:mi:ss.ff'), '自动分单', '寄付日结', '马坡镇黑马程序员', '顺义快递', '17777777777', '蓉蓉', '9点前出门，快来呀', '建材城西路金燕龙办公楼一层', '北京东城区xxx公司', '13333333333', '您的订单已经收到。。。', '宝宝', '速运当日', '待取件', '18516566511', 10, 23, 'QY010', 'QY001');
+insert into BOS017.T_ORDER (c_id, c_customer_id, c_goods_type, c_order_num, c_order_time, c_order_type, c_pay_type_num, c_rec_address, c_rec_company, c_rec_mobile, c_rec_name, c_remark, c_send_address, c_send_company, c_send_mobile, c_send_mobile_msg, c_send_name, c_send_pro_num, c_status, c_telephone, c_weight, c_courier_id, c_rec_area_id, c_send_area_id)
+values (81, 1, '文件', '9307f59f-d4ea-4f6d-afb9-bbbd6e4bbf97', to_timestamp('09-12-2017 15:27:17.512000', 'dd-mm-yyyy hh24:mi:ss.ff'), '自动分单', '寄付日结', '马坡镇黑马程序员', '顺义快递', '17777777777', '蓉蓉', '轻点', '建材城西路金燕龙办公楼二层', '北京海淀区xxx公司', '13333333333', '您的订单已经收到。。。', '宝宝', '速运当日', '待取件', '18516566511', 10, 23, 'QY010', 'QY006');
+commit;
+prompt 4 records loaded
+prompt Loading BOS017.T_PERMISSION...
+insert into BOS017.T_PERMISSION (c_id, c_description, c_keyword, c_name)
+values (1001, '添加快递员功能', 'courier:add', '添加快递员');
+insert into BOS017.T_PERMISSION (c_id, c_description, c_keyword, c_name)
+values (1002, '快递员列表查询功能', 'courier:list', '查询快递员');
+insert into BOS017.T_PERMISSION (c_id, c_description, c_keyword, c_name)
+values (1003, '区域列表查询功能', 'region:list', '区域列表查询');
+insert into BOS017.T_PERMISSION (c_id, c_description, c_keyword, c_name)
+values (1004, '运单管理功能', 'waybill', '运单管理');
+insert into BOS017.T_PERMISSION (c_id, c_description, c_keyword, c_name)
+values (1006, '定区列表查询的功能权限', 'fixedarea:list', '定区列表查询');
+commit;
+prompt 5 records loaded
+prompt Loading BOS017.T_PROMOTION...
+insert into BOS017.T_PROMOTION (c_id, c_active_scope, c_description, c_end_date, c_start_date, c_status, c_title, c_title_img, c_update_time, c_update_unit, c_update_user)
+values (1040, '中国大陆', null, to_timestamp('31-12-2017 00:00:00.000000', 'dd-mm-yyyy hh24:mi:ss.ff'), to_timestamp('21-12-2017 00:00:00.000000', 'dd-mm-yyyy hh24:mi:ss.ff'), '2', '保鲜服务，一步到位', '/bos_management/upload/20171221182931_776.png', null, null, null);
+insert into BOS017.T_PROMOTION (c_id, c_active_scope, c_description, c_end_date, c_start_date, c_status, c_title, c_title_img, c_update_time, c_update_unit, c_update_user)
+values (1041, '中国大陆', '<img src="/bos_management/upload/20171221174952_510.png" alt="" />', to_timestamp('31-12-2017 00:00:00.000000', 'dd-mm-yyyy hh24:mi:ss.ff'), to_timestamp('21-12-2017 00:00:00.000000', 'dd-mm-yyyy hh24:mi:ss.ff'), '1', '保鲜服务，一步到位', '/bos_management/upload/20171221183253_862.png', null, null, null);
+commit;
+prompt 2 records loaded
+prompt Loading BOS017.T_ROLE...
+insert into BOS017.T_ROLE (c_id, c_description, c_keyword, c_name)
+values (1001, '负责基础数据录入', 'base', '基础数据录入员');
+insert into BOS017.T_ROLE (c_id, c_description, c_keyword, c_name)
+values (1002, '负责运单管理功能', 'qupai', '取派业务客服');
+insert into BOS017.T_ROLE (c_id, c_description, c_keyword, c_name)
+values (1020, '客服人员角色', 'kefu', '客服人员');
+commit;
+prompt 3 records loaded
+prompt Loading BOS017.T_ROLE_MENU...
+insert into BOS017.T_ROLE_MENU (c_role_id, c_menu_id)
+values (1020, 12);
+insert into BOS017.T_ROLE_MENU (c_role_id, c_menu_id)
+values (1020, 121);
+insert into BOS017.T_ROLE_MENU (c_role_id, c_menu_id)
+values (1020, 122);
+insert into BOS017.T_ROLE_MENU (c_role_id, c_menu_id)
+values (1020, 123);
+insert into BOS017.T_ROLE_MENU (c_role_id, c_menu_id)
+values (1020, 124);
+insert into BOS017.T_ROLE_MENU (c_role_id, c_menu_id)
+values (1020, 125);
+insert into BOS017.T_ROLE_MENU (c_role_id, c_menu_id)
+values (1020, 126);
+insert into BOS017.T_ROLE_MENU (c_role_id, c_menu_id)
+values (1020, 127);
+commit;
+prompt 8 records loaded
+prompt Loading BOS017.T_ROLE_PERMISSION...
+insert into BOS017.T_ROLE_PERMISSION (c_role_id, c_permission_id)
+values (1001, 1001);
+insert into BOS017.T_ROLE_PERMISSION (c_role_id, c_permission_id)
+values (1001, 1002);
+insert into BOS017.T_ROLE_PERMISSION (c_role_id, c_permission_id)
+values (1001, 1003);
+insert into BOS017.T_ROLE_PERMISSION (c_role_id, c_permission_id)
+values (1002, 1004);
+insert into BOS017.T_ROLE_PERMISSION (c_role_id, c_permission_id)
+values (1020, 1004);
+commit;
+prompt 5 records loaded
+prompt Loading BOS017.T_SCORE...
+insert into BOS017.T_SCORE (id, studentname, coursename, coursescore)
+values (1, '张三', '语文', 74);
+insert into BOS017.T_SCORE (id, studentname, coursename, coursescore)
+values (2, '张三', '数学', 83);
+insert into BOS017.T_SCORE (id, studentname, coursename, coursescore)
+values (3, '张三', '物理', 93);
+insert into BOS017.T_SCORE (id, studentname, coursename, coursescore)
+values (4, '李四', '语文', 74);
+insert into BOS017.T_SCORE (id, studentname, coursename, coursescore)
+values (5, '李四', '数学', 84);
+insert into BOS017.T_SCORE (id, studentname, coursename, coursescore)
+values (6, '李四', '物理', 94);
+commit;
+prompt 6 records loaded
+prompt Loading BOS017.T_SUB_ARCHIVE...
+prompt Table is empty
+prompt Loading BOS017.T_SUB_AREA...
+insert into BOS017.T_SUB_AREA (c_id, c_assist_key_words, c_endnum, c_key_words, c_single, c_start_num, c_area_id, c_fixedarea_id)
+values ('FQ001', null, '50', '建材城西路', '0', '1', 'QY006', 'DQ001');
+insert into BOS017.T_SUB_AREA (c_id, c_assist_key_words, c_endnum, c_key_words, c_single, c_start_num, c_area_id, c_fixedarea_id)
+values ('FQ002', null, '100', '建材城东路', '0', '51', 'QY006', 'DQ002');
+commit;
+prompt 2 records loaded
+prompt Loading BOS017.T_USER...
+insert into BOS017.T_USER (c_id, c_birthday, c_gender, c_nickname, c_password, c_remark, c_station, c_telephone, c_username, status, activetime)
+values (1, null, null, null, 'admin', null, null, null, 'admin', '1', to_date('20-12-2017', 'dd-mm-yyyy'));
+insert into BOS017.T_USER (c_id, c_birthday, c_gender, c_nickname, c_password, c_remark, c_station, c_telephone, c_username, status, activetime)
+values (2001, null, null, null, '1', null, null, null, 'jack', '1', to_date('20-12-2017', 'dd-mm-yyyy'));
+insert into BOS017.T_USER (c_id, c_birthday, c_gender, c_nickname, c_password, c_remark, c_station, c_telephone, c_username, status, activetime)
+values (2002, null, null, null, '1', null, null, null, 'rose', '1', to_date('20-12-2017', 'dd-mm-yyyy'));
+insert into BOS017.T_USER (c_id, c_birthday, c_gender, c_nickname, c_password, c_remark, c_station, c_telephone, c_username, status, activetime)
+values (1021, to_timestamp('10-01-2001 00:00:00.000000', 'dd-mm-yyyy hh24:mi:ss.ff'), '女', '小红', '1', null, '分公司', '188888888888', 'xiaohong', '0', to_date('18-09-2017', 'dd-mm-yyyy'));
+commit;
+prompt 4 records loaded
+prompt Loading BOS017.T_USER_ROLE...
+insert into BOS017.T_USER_ROLE (c_user_id, c_role_id)
+values (1021, 1020);
+insert into BOS017.T_USER_ROLE (c_user_id, c_role_id)
+values (2001, 1001);
+insert into BOS017.T_USER_ROLE (c_user_id, c_role_id)
+values (2002, 1002);
+commit;
+prompt 3 records loaded
+prompt Loading BOS017.T_VEHICLE...
+prompt Table is empty
+prompt Loading BOS017.T_WAY_BILL...
+insert into BOS017.T_WAY_BILL (c_id, c_actlweit, c_arrive_city, c_deltag, c_feeitemnum, c_floadreqr, c_goods_type, c_num, c_pay_type_num, c_rec_address, c_rec_company, c_rec_mobile, c_rec_name, c_remark, c_send_address, c_send_company, c_send_mobile, c_send_name, c_send_pro_num, c_sign_status, c_vol, c_way_bill_num, c_way_bill_type, c_weight, c_order_id, c_rec_area_id, c_send_area_id)
+values (101, null, '上海航头', null, null, '3', '衣服1', 1, null, null, null, null, null, null, null, null, null, null, null, null, null, 'y00001', null, 2, null, null, null);
+insert into BOS017.T_WAY_BILL (c_id, c_actlweit, c_arrive_city, c_deltag, c_feeitemnum, c_floadreqr, c_goods_type, c_num, c_pay_type_num, c_rec_address, c_rec_company, c_rec_mobile, c_rec_name, c_remark, c_send_address, c_send_company, c_send_mobile, c_send_name, c_send_pro_num, c_sign_status, c_vol, c_way_bill_num, c_way_bill_type, c_weight, c_order_id, c_rec_area_id, c_send_area_id)
+values (102, null, '北京顺义', null, null, '3', '电脑', 1, null, null, null, null, null, null, null, null, null, null, null, null, null, 'y00002', null, 2, null, null, null);
+insert into BOS017.T_WAY_BILL (c_id, c_actlweit, c_arrive_city, c_deltag, c_feeitemnum, c_floadreqr, c_goods_type, c_num, c_pay_type_num, c_rec_address, c_rec_company, c_rec_mobile, c_rec_name, c_remark, c_send_address, c_send_company, c_send_mobile, c_send_name, c_send_pro_num, c_sign_status, c_vol, c_way_bill_num, c_way_bill_type, c_weight, c_order_id, c_rec_area_id, c_send_area_id)
+values (104, null, '上海闵行', null, null, '3', '食品1', 1, null, null, null, null, null, null, null, null, null, null, null, null, null, 'y00003', null, 2, null, null, null);
+insert into BOS017.T_WAY_BILL (c_id, c_actlweit, c_arrive_city, c_deltag, c_feeitemnum, c_floadreqr, c_goods_type, c_num, c_pay_type_num, c_rec_address, c_rec_company, c_rec_mobile, c_rec_name, c_remark, c_send_address, c_send_company, c_send_mobile, c_send_name, c_send_pro_num, c_sign_status, c_vol, c_way_bill_num, c_way_bill_type, c_weight, c_order_id, c_rec_area_id, c_send_area_id)
+values (121, null, '上海航头', null, null, '123', '华硕笔记本', 123, null, null, null, null, null, null, null, null, null, null, null, null, null, 'y00004', null, 123, null, null, null);
+insert into BOS017.T_WAY_BILL (c_id, c_actlweit, c_arrive_city, c_deltag, c_feeitemnum, c_floadreqr, c_goods_type, c_num, c_pay_type_num, c_rec_address, c_rec_company, c_rec_mobile, c_rec_name, c_remark, c_send_address, c_send_company, c_send_mobile, c_send_name, c_send_pro_num, c_sign_status, c_vol, c_way_bill_num, c_way_bill_type, c_weight, c_order_id, c_rec_area_id, c_send_area_id)
+values (122, null, '上海闵行', null, null, '11', '惠普笔记本', 11, null, null, null, null, null, null, null, null, null, null, null, null, null, 'y00005', null, 11, null, null, null);
+commit;
+prompt 5 records loaded
+prompt Loading BOS017.T_WORK_BILL...
+insert into BOS017.T_WORK_BILL (c_id, c_attachbilltimes, c_buildtime, c_pickstate, c_remark, c_smsnumber, c_type, c_courier, c_order_id)
+values (66, 0, to_timestamp('07-12-2017 18:40:00.434000', 'dd-mm-yyyy hh24:mi:ss.ff'), '新单', '9点前出门，快来呀', '1111', '新', 23, 65);
+insert into BOS017.T_WORK_BILL (c_id, c_attachbilltimes, c_buildtime, c_pickstate, c_remark, c_smsnumber, c_type, c_courier, c_order_id)
+values (82, 0, to_timestamp('09-12-2017 15:29:32.082000', 'dd-mm-yyyy hh24:mi:ss.ff'), '新单', '轻点', '1111', '新', 23, 81);
+commit;
+prompt 2 records loaded
+prompt Enabling foreign key constraints for BOS017.T_COURIER...
+alter table BOS017.T_COURIER enable constraint FKD4E2P0HLRIYCHXAPEI07GO5KQ;
+alter table BOS017.T_COURIER enable constraint FKIY0RVS2X4XEHC75SWPHUOFJYK;
+prompt Enabling foreign key constraints for BOS017.T_FIXEDAREA_COURIER...
+alter table BOS017.T_FIXEDAREA_COURIER enable constraint FKFXJVLWOXV2O8WROET7M2J0AT7;
+alter table BOS017.T_FIXEDAREA_COURIER enable constraint FKGF7F6F196NFTJG1P26IRFY8LW;
+prompt Enabling foreign key constraints for BOS017.T_MENU...
+alter table BOS017.T_MENU enable constraint FKS2GGRQEMELGIRB6WWETBJQMCT;
+prompt Enabling foreign key constraints for BOS017.T_ORDER...
+alter table BOS017.T_ORDER enable constraint FK46SYBXL43L6V79XIWC0NRSEFB;
+alter table BOS017.T_ORDER enable constraint FK9XARM51LATW23N5G8YF8OUVG6;
+alter table BOS017.T_ORDER enable constraint FKEWSODCYNDO47V40M08XRWHGK6;
+prompt Enabling foreign key constraints for BOS017.T_ROLE_MENU...
+alter table BOS017.T_ROLE_MENU enable constraint FK6W94MFB5V0K7WXCMD6ENTWL7V;
+alter table BOS017.T_ROLE_MENU enable constraint FKONMMFAGV5HX8W5YDXVQO73XHA;
+prompt Enabling foreign key constraints for BOS017.T_ROLE_PERMISSION...
+alter table BOS017.T_ROLE_PERMISSION enable constraint FKRBTWEDL099SMOUXUPMK5JB4NP;
+alter table BOS017.T_ROLE_PERMISSION enable constraint FKSOGNHTHYJUBE5XNBW15157OSF;
+prompt Enabling foreign key constraints for BOS017.T_SUB_ARCHIVE...
+alter table BOS017.T_SUB_ARCHIVE enable constraint FKJYPTLTN7R5BHQSHI3RLC6QPYA;
+prompt Enabling foreign key constraints for BOS017.T_SUB_AREA...
+alter table BOS017.T_SUB_AREA enable constraint FK96XB3D59SC1O1QUW68DS9ADIP;
+alter table BOS017.T_SUB_AREA enable constraint FKRCQBGM4699P3578L0XSW9IPJO;
+prompt Enabling foreign key constraints for BOS017.T_USER_ROLE...
+alter table BOS017.T_USER_ROLE enable constraint FK78E5QD0RIAEAT0WQUHUWCC3CQ;
+alter table BOS017.T_USER_ROLE enable constraint FK9948HCIPPKRDY7LLAF96FYQ81;
+prompt Enabling foreign key constraints for BOS017.T_WAY_BILL...
+alter table BOS017.T_WAY_BILL enable constraint FK6UYX90IPU075OFLV9JGLKK3DP;
+alter table BOS017.T_WAY_BILL enable constraint FKG49R3Y9PIRH2J77ADXX7MYPQ6;
+alter table BOS017.T_WAY_BILL enable constraint FKMM8N9W5RTI2F6GGRP8S02UY2N;
+prompt Enabling foreign key constraints for BOS017.T_WORK_BILL...
+alter table BOS017.T_WORK_BILL enable constraint FKJFMKWQNBRKSHCGEBBBVMJRJPG;
+alter table BOS017.T_WORK_BILL enable constraint FKKI91JSF412E16E3J7I6WTN1K;
+prompt Enabling triggers for BOS017.T_ARCHIVE...
+alter table BOS017.T_ARCHIVE enable all triggers;
+prompt Enabling triggers for BOS017.T_AREA...
+alter table BOS017.T_AREA enable all triggers;
+prompt Enabling triggers for BOS017.T_STANDARD...
+alter table BOS017.T_STANDARD enable all triggers;
+prompt Enabling triggers for BOS017.T_TAKE_TIME...
+alter table BOS017.T_TAKE_TIME enable all triggers;
+prompt Enabling triggers for BOS017.T_COURIER...
+alter table BOS017.T_COURIER enable all triggers;
+prompt Enabling triggers for BOS017.T_FIXED_AREA...
+alter table BOS017.T_FIXED_AREA enable all triggers;
+prompt Enabling triggers for BOS017.T_FIXEDAREA_COURIER...
+alter table BOS017.T_FIXEDAREA_COURIER enable all triggers;
+prompt Enabling triggers for BOS017.T_MENU...
+alter table BOS017.T_MENU enable all triggers;
+prompt Enabling triggers for BOS017.T_ORDER...
+alter table BOS017.T_ORDER enable all triggers;
+prompt Enabling triggers for BOS017.T_PERMISSION...
+alter table BOS017.T_PERMISSION enable all triggers;
+prompt Enabling triggers for BOS017.T_PROMOTION...
+alter table BOS017.T_PROMOTION enable all triggers;
+prompt Enabling triggers for BOS017.T_ROLE...
+alter table BOS017.T_ROLE enable all triggers;
+prompt Enabling triggers for BOS017.T_ROLE_MENU...
+alter table BOS017.T_ROLE_MENU enable all triggers;
+prompt Enabling triggers for BOS017.T_ROLE_PERMISSION...
+alter table BOS017.T_ROLE_PERMISSION enable all triggers;
+prompt Enabling triggers for BOS017.T_SCORE...
+alter table BOS017.T_SCORE enable all triggers;
+prompt Enabling triggers for BOS017.T_SUB_ARCHIVE...
+alter table BOS017.T_SUB_ARCHIVE enable all triggers;
+prompt Enabling triggers for BOS017.T_SUB_AREA...
+alter table BOS017.T_SUB_AREA enable all triggers;
+prompt Enabling triggers for BOS017.T_USER...
+alter table BOS017.T_USER enable all triggers;
+prompt Enabling triggers for BOS017.T_USER_ROLE...
+alter table BOS017.T_USER_ROLE enable all triggers;
+prompt Enabling triggers for BOS017.T_VEHICLE...
+alter table BOS017.T_VEHICLE enable all triggers;
+prompt Enabling triggers for BOS017.T_WAY_BILL...
+alter table BOS017.T_WAY_BILL enable all triggers;
+prompt Enabling triggers for BOS017.T_WORK_BILL...
+alter table BOS017.T_WORK_BILL enable all triggers;
+
+

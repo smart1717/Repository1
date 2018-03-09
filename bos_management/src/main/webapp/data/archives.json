@@ -1,0 +1,6 @@
+{                                                      
+	"total":100,	
+	"rows":[ 
+		{"id":1,"archiveName":"分单类型","hasChild":1,"remark":"订单派单给快递员时的分单方式"}
+	]
+}

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+			
+	<!-- 配置Shiro核心Filter,bean的id必须和过滤器的名字一样  --> 
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- 1.注入安全管理器，大管家老板 -->
+		<property name="securityManager" ref="securityManager" />
+		<!-- 2.认证 -->
+		<!-- 未认证，跳转到哪个页面 ，如果认证失败，跳转的默认页面 -->
+		<property name="loginUrl" value="/login.html" />
+		<!-- 登录页面页面，如果认证成功，则默认跳转的页面 -->
+		<property name="successUrl" value="/index.html" />
+		<!-- 3.授权 -->
+		<!-- 如果没有授权，则默认跳转到该页面 -->
+		<property name="unauthorizedUrl" value="/unauthorized.html" />
+		<!-- 4.过滤器规则：url级别的权限规则 -->
+		<!-- shiro URL控制过滤器规则：配置的小过滤器链（过滤器栈）：执行从上倒下有顺序，找到了则不再继续寻找
+		配置两类过滤器：认证和授权
+		认证：
+		anno：匿名允许访问，即无需认证
+		authc： 必须认证才能允许访问
+		授权：
+		perms：必须有某字符串功能权限才能允许访问
+		roles：必须有某字符串角色权限才能允许访问
+		  -->
+		<property name="filterChainDefinitions">
+			<value>
+				/login.html* = anon
+				/user_login.action* = anon 
+				/validatecode.jsp* = anon
+				/css/** = anon
+				/js/** = anon
+				/images/** = anon
+				/services/** = anon 
+				/upload/**=anon
+				/pages/base/courier.html* = perms[courier:list]
+				/pages/base/area.html* = roles[base]
+				/** = authc
+			</value>
+		</property>
+	</bean>
+	
+	<!-- 安全管理器  -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!-- 配置注入realm -->
+		<property name="realm" ref="bosRealm"/>
+		<!-- 注入shiro缓存管理器 -->
+		<property name="cacheManager" ref="shiroCacheManager"/>
+	</bean>
+	
+	<!-- 配置Shiro的bean后处理器：用来初始化Shiro的bean（安全数据等）在spring中-->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+	<!-- 开启Shiro注解 -->
+	<!-- Enable Shiro Annotations for Spring-configured beans.
+	Only run after -->
+	<!-- the lifecycleBeanProcessor has run:
+	depends-on：当前bean初始化时，必须依赖于指定的bean，（指定的
+	bean必须先初始化）
+	下面的两个bean配置：传统的aop编程：增强、切点、切面
+	-->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+	depends-on="lifecycleBeanPostProcessor"/>
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<!-- 必须注入安全管理器 -->
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+	
+	<!-- shiro整合echcache的缓存配置 -->
+	<!-- 配置Shiro的平台缓存管理 -->
+	<bean id="shiroCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<!-- 注入ehcache的对象 -->
+		<property name="cacheManager" ref="ehCacheManager" />
+	</bean>
+	
+	
+</beans>

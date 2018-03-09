@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<!--引入angularjs-->
+		<script type="text/javascript" src="../js/angular.min.js" ></script>
+	</head>
+	<body>
+		<!--<div ng-app="" ng-init="username='Rose';">-->
+		<div ng-app="myApp" ng-controller="myCtrl">
+			<input ng-model="username"/>
+			<input type="button" value="清空数据1" ng-click="username=''"/>
+			<input type="button" value="清空数据2" ng-click="clearMsg()"/>
+			<div>Hello {{username}}</div>
+		</div>
+		
+		<script>
+			//初始化模块
+			var myApp=angular.module("myApp",[]);
+			//初始化模块下的控制器
+			myApp.controller("myCtrl",["$scope",function ($scope) {
+				//控制层逻辑代码
+				$scope.username="小红";
+				
+				//定义angularjs的函数
+				$scope.clearMsg=function(){
+					//清空值
+					$scope.username="";
+				}
+				
+			}]);
+		</script>
+	</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>运单快速录入</title>
+		<!-- 导入jquery核心类库 -->
+		<script type="text/javascript" src="../../js/jquery-1.8.3.js"></script>
+		<!-- 导入easyui类库 -->
+		<link rel="stylesheet" type="text/css" href="../../js/easyui/themes/default/easyui.css">
+		<link rel="stylesheet" type="text/css" href="../../js/easyui/themes/icon.css">
+		<link rel="stylesheet" type="text/css" href="../../js/easyui/ext/portal.css">
+		<link rel="stylesheet" type="text/css" href="../../css/default.css">
+		<script type="text/javascript" src="../../js/easyui/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="../../js/easyui/ext/jquery.portal.js"></script>
+		<script type="text/javascript" src="../../js/easyui/ext/jquery.cookie.js"></script>
+		<script src="../../js/easyui/locale/easyui-lang-zh_CN.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			
+		//页面全局的变量，用来存放正在编辑的行的索引，默认undefined
+			var editIndex;
+			
+			//新增一行
+			function doAdd(){
+				//第二次，该判断就为true
+				if(editIndex != undefined){
+					//结束编辑方法：将正在编辑的行进行结束编辑
+					//隐藏了一个动作：先校验表单，如果都通过了才能结束编辑，否则不能触发结束编辑的事件
+					$("#grid").datagrid('endEdit',editIndex);
+				}
+				
+				//第一次先走该代码，原因editIndex默认undefined
+				if(editIndex==undefined){
+					//alert("快速添加电子单...");
+					//插入一个新行
+					$("#grid").datagrid('insertRow',{
+						//要插入的新行的索引，如果之前有该索引，则原来的行的索引自动+1
+						index : 0,//这里在第一行添加新行
+						//插入的行的数据
+						row : {}//空数据
+						//row : {"arrivecity":"上海"}
+					});
+					//立即打开编辑第一行
+					$("#grid").datagrid('beginEdit',0);
+					//将当前编辑的索引放到全局变量中
+					editIndex = 0;
+				}
+			}
+			
+			function doSave(){
+				$("#grid").datagrid('endEdit',editIndex );
+			}
+			
+			//取消编辑
+			function doCancel(){
+				//如果有正在编辑的行的索引
+				if(editIndex!=undefined){
+					//取消编辑（回退）
+					$("#grid").datagrid('cancelEdit',editIndex);
+					//如果数据没有id（新增保存数据-id是数据库生成的），如果取消，则直接删除改行，但如果有id，说明它是更新的，回退
+					if($('#grid').datagrid('getRows')[editIndex].id == undefined){
+						$("#grid").datagrid('deleteRow',editIndex);
+					}
+					editIndex = undefined;
+				}
+			}
+			
+			//工具栏
+			var toolbar = [ {
+				id : 'button-add',	
+				text : '新增一行',
+				iconCls : 'icon-edit',
+				handler : doAdd
+			}, {
+				id : 'button-cancel',
+				text : '取消编辑',
+				iconCls : 'icon-cancel',
+				handler : doCancel
+			}, {
+				id : 'button-save',
+				text : '保存',
+				iconCls : 'icon-save',
+				handler : doSave
+			}];
+			// 定义列
+			var columns = [ [ {
+				field : 'wayBillNum',
+				title : '运单号',
+				width : 120,
+				align : 'center',
+				editor :{
+					type : 'validatebox',
+					options : {
+						required: true
+					}
+				}
+			}, {
+				field : 'arriveCity',
+				title : '到达地',
+				width : 120,
+				align : 'center',
+				editor :{
+					type : 'validatebox',
+					options : {
+						required: true
+					}
+				}
+			},{
+				field : 'goodsType',
+				title : '托寄物类型',
+				width : 120,
+				align : 'center',
+				editor :{
+					type : 'validatebox',
+					options : {
+						required: true
+					}
+				}
+			}, {
+				field : 'num',
+				title : '件数',
+				width : 120,
+				align : 'center',
+				editor :{
+					type : 'numberbox',
+					options : {
+						required: true
+					}
+				}
+			}, {
+				field : 'weight',
+				title : '重量',
+				width : 120,
+				align : 'center',
+				editor :{
+					type : 'validatebox',
+					options : {
+						required: true
+					}
+				}
+			}, {
+				field : 'floadreqr',
+				title : '配载要求',
+				width : 220,
+				align : 'center',
+				editor :{
+					type : 'validatebox',
+					options : {
+						required: true
+					}
+				}
+			}] ];
+			
+			$(function(){
+				// 先将body隐藏，再显示，不会出现页面刷新效果
+				$("body").css({visibility:"visible"});
+				
+				// 运单数据表格
+				$('#grid').datagrid( {
+					iconCls : 'icon-forward',
+					fit : true,
+					border : true,
+					rownumbers : true,
+					striped : true,
+					pageList: [30,50,100],
+					pagination : true,
+					toolbar : toolbar,
+					url :  "../../waybill_listPage.action",
+					idField : 'id',
+					columns : columns,
+					onDblClickRow : doDblClickRow,
+					//结束编辑的事件
+					onAfterEdit : function(rowIndex, rowData, changes){
+						console.info(rowData);
+						//将数据保存到数据库(异步)
+						$.post("../../wayBill_addquick.action",rowData,function(data){
+							//data:操作后的结果
+							if(data.result){
+								//保存成功
+								$.messager.show({
+									title:'恭喜',
+									msg:'快速保存一个运单成功！',
+									timeout:2000,//多久自动关闭窗口，单位毫秒
+									//showType:'slide'
+										//showType:'show',
+										showType:'fade',
+									style:{
+										right:'',
+										top:document.body.scrollTop+document.documentElement.scrollTop,
+										bottom:''
+									}
+
+								});
+							}else{
+								//保存失败
+								$.messager.alert("错误","快速保存运单失败！","error");
+							}
+						
+						
+							//刷新列表
+							$("#grid").datagrid("load");//重置分页初始条件：第一页，但reload会保持分页条件
+							
+						});
+						
+						//将正在编辑的索引重置为undefined
+						editIndex = undefined;
+					}
+				});
+			});
+		
+			function doDblClickRow(rowIndex, rowData){
+				alert("双击表格数据...");
+				console.info(rowIndex);
+				$('#grid').datagrid('beginEdit',rowIndex);
+				editIndex = rowIndex;
+			}
+			
+			var i=5;
+			
+			//变量污染
+			/* for(var i=0;i<10;i++){
+				console.log(i);
+			} */
+			//循环的代码块中的变量污染了外面的变量
+			//解决1：定义不同变量
+			//let相当于java类中的私有变量的声明
+			for(let i=0;i<10;i++){
+				console.log(i);
+			}
+			//解决2：使用let
+			
+			//alert(i);
+			
+			
+			//定义搜索的函数
+			//参数1：输入的值
+			//参数2：选中菜单的name的值
+			function doSearch(value,name){
+				//alert(name+"---"+value)
+				//alert(1);
+				//目标：将页面的参数传递给后台，返回结果数据，刷新列表
+				$("#grid").datagrid("load",{
+					//两个条件
+					//搜索字段名字
+					"fieldName":name
+					//搜索的关键字的值
+					,"fieldValue":value
+				}); 
+				
+			}
+			
+		</script>
+	</head>
+
+	<body class="easyui-layout" style="visibility:hidden;">
+		<div region="north">
+			<input class="easyui-searchbox" data-options="searcher:doSearch,prompt:'请输入要搜索的内容',menu:'#mm'" style="width:300px"/>
+			<!-- 菜单 -->
+			<div id="mm">
+				<div name="arriveCity" data-options="iconCls:'icon-ok'">到达地</div>
+				<div name="goodsType">托寄物类型</div>
+			</div>
+		</div>
+		<div region="center" border="false">
+			<table id="grid"></table>
+		</div>
+	</body>
+
+</html> 

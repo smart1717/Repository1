@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<!--引入angularjs-->
+		<script type="text/javascript" src="angular.min.js"></script>
+		<!--引入jQuery-->
+		<script type="text/javascript" src="jquery.js"></script>
+		<!--引入BootStrap-->
+		<script type="text/javascript" src="bootstrap.js"></script>
+		<link rel="stylesheet" href="css/bootstrap.css"/>
+	</head>
+	<body ng-app="bosfore_app" ng-controller="ctrlRead">
+		<!--表格--> 
+		<table class="table table-bordered">
+			<tr>
+				<th>序号</th>
+				<th>客户编号</th>
+				<th>客户姓名</th>
+				<th>手机</th>
+				<th>公司</th>
+			</tr>
+			<tr ng-repeat="item in pageItems">
+				<td>{{$index+1}}</td>
+				<td>{{item.id}}</td>
+				<td>{{item.username}}</td>
+				<td>{{item.telephone}}</td>
+				<td>{{item.company}}</td>
+			</tr>
+
+		</table>
+		<!--分页工具条-->
+		<div>
+			<ul class="pagination pull-right">
+				<li>
+					<a href ng-click="prev()">上一页</a>
+				</li>
+				<li ng-repeat="page in pageList" ng-class="{active:isActivePage(page)}">
+					<a href ng-click="selectPage(page)">{{[page]}}</a>
+				</li>
+				<li>
+					<a href ng-click="next()">下一页</a>
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script>
+		var bosfore_app = angular.module("bosfore_app", []); 
+	</script>
+	<script src="page.js"></script> 
+</html>
+
